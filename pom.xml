@@ -22,6 +22,10 @@
             <id>papermc</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
+        <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -37,6 +41,18 @@
             <artifactId>paper-api</artifactId>
             <version>26.2.build.112-stable</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!--
+            bStats metrics. This IS bundled into the jar (compile scope) and
+            relocated by the shade plugin below, per bStats' own instructions,
+            so it doesn't clash with other plugins that also bundle bStats.
+        -->
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>3.1.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -62,10 +78,51 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.3.1</version>
             </plugin>
+            <!--
+                Shades (bundles) bStats into the output jar and relocates its
+                package so it doesn't collide with other plugins' copies of
+                bStats. This replaces plain maven-jar-plugin as the packaging
+                step, since a plain jar wouldn't include bStats' classes.
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.4.1</version>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.6.1</version>
+                <!--
+                    The Shade Plugin bundles an old ASM that can't read Java 25
+                    class files ("Unsupported class file major version 69").
+                    Overriding ASM here fixes it - see
+                    https://github.com/apache/maven-shade-plugin/issues/791
+                -->
+                <dependencies>
+                    <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm</artifactId>
+                        <version>9.9.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm-commons</artifactId>
+                        <version>9.9.1</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.bstats</pattern>
+                                    <!-- Keep this in sync with the package below. -->
+                                    <shadedPattern>com.example.spawnplugin.libs.bstats</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
