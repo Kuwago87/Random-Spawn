@@ -1,0 +1,20 @@
+name: RandomSpawn
+version: '${project.version}'
+main: com.example.spawnplugin.RandomSpawn
+api-version: '26.2'
+author: Tony
+description: Teleports players to a random location from a predefined list on join, on respawn, and via /spawn.
+
+commands:
+  spawn:
+    description: Teleport to a random predefined spawn location.
+    usage: /spawn [reload]
+    permission: randomspawn.use
+
+permissions:
+  randomspawn.use:
+    description: Allows use of /spawn
+    default: true
+  randomspawn.reload:
+    description: Allows reloading RandomSpawn's config with /spawn reload
+    default: op

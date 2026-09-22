@@ -1,0 +1,48 @@
+# RandomSpawn configuration
+#
+# Predefined spawn points. Add as many as you like - one is picked at random
+# each time a player is sent to spawn. "world" must match an existing world
+# name on your server (check with /worlds or your server.properties / level
+# folder names). yaw/pitch are optional and default to 0.
+locations:
+  - world: world
+    x: 0.5
+    y: 100.0
+    z: 0.5
+    yaw: 0.0
+    pitch: 0.0
+  - world: world
+    x: 250.5
+    y: 70.0
+    z: -120.5
+    yaw: 90.0
+    pitch: 0.0
+  - world: world_nether
+    x: 10.5
+    y: 64.0
+    z: 10.5
+    yaw: 0.0
+    pitch: 0.0
+
+settings:
+  # Teleport players to a random location whenever they join the server.
+  teleport-on-join: true
+
+  # If true, teleport-on-join above only applies to a player's very first
+  # join ever (uses Player#hasPlayedBefore). If false, it applies to every join.
+  first-join-only: false
+
+  # Teleport players to a random location whenever they respawn after death,
+  # instead of their bed/respawn anchor.
+  teleport-on-respawn: true
+
+  # Message sent to a player after being randomly placed. Supports '&' color
+  # codes. Leave blank ("") to disable.
+  teleport-message: "&aYou've been sent to a random spawn point!"
+
+  # If true, logs a detailed line to console for every join/respawn/spawn
+  # decision (locations loaded, which one was picked, whether it was skipped
+  # and why, whether a respawn had to be corrected). Turn this on if
+  # something isn't teleporting the way you expect, reproduce it, then check
+  # your server console/log for lines starting with "[debug]".
+  debug: false
